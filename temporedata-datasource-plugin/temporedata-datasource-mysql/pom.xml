@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.temporedata</groupId>
+        <artifactId>temporedata-datasource-plugin</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>temporedata-datasource-mysql</artifactId>
+    <name>temporedata-datasource-mysql</name>
+    <description>MySQL 数据源插件</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.temporedata</groupId>
+            <artifactId>temporedata-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- MySQL 驱动随模块自带 -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+        </dependency>
+    </dependencies>
+</project>

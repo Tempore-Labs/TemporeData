@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: org.qingzhouyun.modules.gov.security.SqlPlanRewriterTest
+-------------------------------------------------------------------------------
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.676 s - in org.qingzhouyun.modules.gov.security.SqlPlanRewriterTest

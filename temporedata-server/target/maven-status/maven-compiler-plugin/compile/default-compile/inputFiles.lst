@@ -1,0 +1,7 @@
+/Users/kodlien/Documents/TemporeData/temporedata-server/src/main/java/org/temporedata/app/TemporeDataApplication.java
+/Users/kodlien/Documents/TemporeData/temporedata-server/src/main/java/org/temporedata/app/config/WebMvcConfig.java
+/Users/kodlien/Documents/TemporeData/temporedata-server/src/main/java/org/temporedata/app/config/AsyncConfig.java
+/Users/kodlien/Documents/TemporeData/temporedata-server/src/main/java/org/temporedata/app/config/FlywayConfig.java
+/Users/kodlien/Documents/TemporeData/temporedata-server/src/main/java/org/temporedata/app/config/HttpClientConfig.java
+/Users/kodlien/Documents/TemporeData/temporedata-server/src/main/java/org/temporedata/app/config/SwaggerConfig.java
+/Users/kodlien/Documents/TemporeData/temporedata-server/src/main/java/org/temporedata/app/controller/SpaForwardController.java

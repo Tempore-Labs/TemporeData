@@ -1,0 +1,32 @@
+package org.temporedata.modules.dev.resource.entity;
+
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UpdateTimestamp;
+import javax.persistence.*;
+import java.time.LocalDateTime;
+
+/** Resource entity. */
+@Data @Builder @NoArgsConstructor @AllArgsConstructor
+@Entity(name = "ResourceEntityV2") @Table(name = "zy_resource")
+public class ResourceEntity {
+    @Id @GeneratedValue(generator="uuid2") @GenericGenerator(name="uuid2", strategy="uuid2") @Column(length=32)
+    private String id;
+    @CreationTimestamp @Column(updatable=false)
+    private LocalDateTime createDateTime;
+    @Column(length=32)
+    private String createBy;
+    @UpdateTimestamp
+    private LocalDateTime updateDateTime;
+    @Column(length=32)
+    private String updateBy;
+    @Column(length=32)
+    private String tenantId;
+    @Column
+    private String name;
+    @Column
+    private String status;
+    @Column(columnDefinition="TEXT")
+    private String description;
+}

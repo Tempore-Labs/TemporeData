@@ -1,0 +1,1 @@
+import{a as e}from"./index-BtUenGqz.js";const p={list:()=>e.get("/api/datasource").then(a=>a.data.data),create:a=>e.post("/api/datasource",a).then(t=>t.data.data),update:(a,t)=>e.put(`/api/datasource/${a}`,t).then(d=>d.data.data),delete:a=>e.delete(`/api/datasource/${a}`).then(t=>t.data.data),test:a=>e.post(`/api/datasource/${a}/test`).then(t=>t.data.data)};export{p as d};

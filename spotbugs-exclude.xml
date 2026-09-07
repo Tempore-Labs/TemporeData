@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SpotBugs 排除项（P3-13 SAST）。
+  - 生成的/lombok 相关（等号处）与访问器方法不视为缺陷。
+  - Entity/DTO POJO 纯 getter/setter 由 Lombok 生成，统一排除 EI_EXPOSE_REP 类提示，
+    避免把"返回可变集合"误判为 High（项目内多为受控 DTO/SQL 结果）。
+-->
+<FindBugsFilter>
+  <Match>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+  <Match>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+  <Match>
+    <Bug pattern="PZLA_PREFER_ZERO_LENGTH_ARRAYS"/>
+  </Match>
+  <Match>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+</FindBugsFilter>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.temporedata</groupId>
+        <artifactId>temporedata</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>temporedata-api</artifactId>
+    <name>temporedata-api</name>
+    <description>对外契约（DTO / Req / Res / 数据源 SPI）</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.temporedata</groupId>
+            <artifactId>temporedata-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- 数据源 SPI（DatasourcePluginContext / PluginManager 使用 @Component 与 SPI 加载） -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+    </dependencies>
+</project>

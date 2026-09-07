@@ -1,0 +1,1 @@
+import{a as t}from"./index-B8kRpthL.js";const p={parse:a=>t.post("/api/workflow-lineage/parse",{sql:a}).then(e=>e.data.data),sync:a=>t.post(`/api/workflow-lineage/${a}/sync`).then(e=>e.data.data),graph:a=>t.get(`/api/workflow-lineage/${a}`).then(e=>e.data.data)};export{p as w};

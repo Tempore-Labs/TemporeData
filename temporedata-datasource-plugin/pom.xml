@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.temporedata</groupId>
+        <artifactId>temporedata</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>temporedata-datasource-plugin</artifactId>
+    <packaging>pom</packaging>
+    <name>temporedata-datasource-plugin</name>
+    <description>数据源插件聚合父模块：只容纳各数据源插件实现（DolphinScheduler 风格）</description>
+
+    <modules>
+        <module>temporedata-datasource-mysql</module>
+        <module>temporedata-datasource-postgresql</module>
+        <module>temporedata-datasource-clickhouse</module>
+        <module>temporedata-datasource-oracle</module>
+        <module>temporedata-datasource-doris</module>
+        <module>temporedata-datasource-starrocks</module>
+        <module>temporedata-datasource-hive</module>
+        <module>temporedata-datasource-oceanbase</module>
+    </modules>
+
+    <!-- 注意：聚合父仅聚合排序，不可在 <dependencies> 引用自身子模块（会造成自引用循环）；
+         插件由 temporedata-service 直接声明依赖带入运行时 -->
+</project>

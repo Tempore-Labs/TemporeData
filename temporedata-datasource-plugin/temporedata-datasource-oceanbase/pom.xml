@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.temporedata</groupId>
+        <artifactId>temporedata-datasource-plugin</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>temporedata-datasource-oceanbase</artifactId>
+    <name>temporedata-datasource-oceanbase</name>
+    <description>OceanBase 数据源插件（MySQL 协议兼容）</description>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.temporedata</groupId>
+                <artifactId>temporedata-bom</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.temporedata</groupId>
+            <artifactId>temporedata-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- OceanBase 驱动随模块自带 -->
+        <dependency>
+            <groupId>com.oceanbase</groupId>
+            <artifactId>oceanbase-client</artifactId>
+        </dependency>
+    </dependencies>
+</project>

@@ -1,0 +1,42 @@
+# 轻舟云 temporedata - one-command local deployment.
+# Usage: docker compose up -d --build
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: temporedata-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD}
+      MYSQL_DATABASE: temporedata
+      MYSQL_CHARACTER_SET_SERVER: utf8mb4
+      MYSQL_COLLATION_SERVER: utf8mb4_unicode_ci
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  temporedata:
+    build: .
+    image: temporedata:latest
+    container_name: temporedata
+    ports:
+      - "8080:8080"
+    environment:
+      QZ_JWT_SECRET: ${QZ_JWT_SECRET:-change-me-in-production}
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: temporedata
+      DB_USERNAME: root
+      DB_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD}
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  mysql-data:

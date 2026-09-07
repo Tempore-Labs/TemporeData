@@ -1,0 +1,45 @@
+/* TemporeData v2.0 design-system tokens.
+ * Aligned with 03-frontend-code-architecture.md · design-system/.
+ * Keep in sync with the existing element-plus theme used by the legacy app. */
+:root {
+  /* Brand / accent */
+  --td-color-primary: #2563eb;
+  --td-color-success: #10b981;
+  --td-color-warning: #f59e0b;
+  --td-color-danger: #dc2626;
+  --td-color-info: #64748b;
+  --td-color-highlight: #8b5cf6;
+
+  /* Surfaces */
+  --td-bg-canvas: #f5f7fa;
+  --td-bg-surface: #ffffff;
+  --td-border: #e2e8f0;
+
+  /* Text */
+  --td-text: #0f172a;
+  --td-text-sub: #475569;
+  --td-text-muted: #64748b;
+
+  /* Typography */
+  --td-fs-xs: 11px;
+  --td-fs-sm: 12px;
+  --td-fs-md: 14px;
+  --td-fs-lg: 16px;
+  --td-fs-xl: 20px;
+  --td-radius-sm: 4px;
+  --td-radius-md: 6px;
+  --td-radius-lg: 10px;
+  --td-space: 4px;
+  --td-gap: 12px;
+  --td-shadow-card: 0 1px 2px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.08);
+  --td-shadow-overlay: 0 8px 24px rgba(15, 23, 42, 0.12);
+}
+
+/* Dark-mode seam (opt-in later) */
+[data-theme='dark'] {
+  --td-bg-canvas: #0b1220;
+  --td-bg-surface: #111827;
+  --td-text: #e2e8f0;
+  --td-text-sub: #94a3b8;
+  --td-border: #1e293b;
+}

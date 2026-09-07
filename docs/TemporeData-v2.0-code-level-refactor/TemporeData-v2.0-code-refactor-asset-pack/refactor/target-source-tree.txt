@@ -1,0 +1,63 @@
+TemporeData target source tree
+
+temporedata-api/src/main/java/org/temporedata/api
+├── contract
+├── datasource
+├── executor
+├── response
+└── security
+
+temporedata-service/src/main/java/org/temporedata/service
+├── system
+│   ├── controller
+│   ├── application
+│   ├── domain
+│   ├── repository
+│   ├── dto
+│   └── mapper
+├── cluster
+├── compute
+├── job
+├── monitoring
+├── logging
+├── incident
+├── automation
+└── data
+    ├── datasource
+    ├── metadata
+    ├── catalog
+    ├── lineage
+    ├── quality
+    ├── security
+    └── service
+
+temporedata-datasource-plugin
+├── mysql
+├── postgresql
+├── oracle
+├── clickhouse
+├── hive
+├── oceanbase
+├── doris
+└── starrocks
+
+temporedata-ui/src
+├── app
+├── layouts
+├── components
+├── features
+│   ├── dashboard
+│   ├── cluster
+│   ├── compute
+│   ├── jobs
+│   ├── monitoring
+│   ├── logging
+│   ├── incidents
+│   ├── automation
+│   └── data
+├── stores
+├── services
+├── composables
+├── permissions
+├── design-system
+└── utils

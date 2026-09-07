@@ -1,0 +1,1 @@
+import{Q as u,a as t,bc as s}from"./index-DGza4k7u.js";function n(e,r){return u(e,r||t().user)}const a=Object.freeze(["job:execute","automation:item:execute","incident:resolve","data:drop"]);function o(e,r){return s(t().user)?!0:n(e,t().user)&&!a.includes(e)}export{o as c,n as h};

@@ -1,0 +1,172 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: temporedata
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  servlet:
+    multipart:
+      max-file-size: 256MB
+      max-request-size: 512MB
+
+  # MySQL with Flyway migration (connection pool: HikariCP, Spring Boot default)
+  datasource:
+    # Dev default uses useSSL=false; allowPublicKeyRetrieval=true is required so the MySQL 8
+    # driver can fetch the RSA public key for the default caching_sha2_password plugin over a
+    # non-SSL connection (else HikariCP fails with "Public Key Retrieval is not allowed").
+    # For non-local/prod, keep useSSL=true and do NOT rely on public-key retrieval.
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:temporedata}?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${DB_USERNAME:root}
+    # Dev default only; override via DB_PASSWORD env for any non-local deployment
+    password: ${DB_PASSWORD:zy@2026}
+    hikari:
+      connection-timeout: 30000
+      maximum-pool-size: ${DB_POOL_MAX:10}
+      minimum-idle: ${DB_POOL_MIN:2}
+      pool-name: temporedata-hikari
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  # Cache: Caffeine (default) / Redis (set ZY_CACHE_TYPE=redis + Redis reachable)
+  cache:
+    type: ${TEMPOREDATA_CACHE_TYPE:caffeine}
+
+  # Redis (used by Redis cache type and Redis distributed lock)
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD:}
+    timeout: ${REDIS_TIMEOUT:2000ms}
+    lettuce:
+      pool:
+        max-active: ${REDIS_POOL_MAX:8}
+        max-idle: ${REDIS_POOL_IDLE:8}
+        min-idle: ${REDIS_POOL_MIN:0}
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+# SpringDoc OpenAPI
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
+
+temporedata:
+  jwt:
+    secret: ${TEMPOREDATA_JWT_SECRET:temporedata-p0-secret-key-please-change-in-production}
+    expiration-ms: 86400000
+  crypto:
+    key: ${TEMPOREDATA_CRYPTO_KEY:temporedata-p0-key}
+  # Distributed lock provider: memory (default, single-node) / redis (multi-node)
+  lock:
+    provider: ${TEMPOREDATA_LOCK_PROVIDER:memory}
+    ttl-ms: ${TEMPOREDATA_LOCK_TTL_MS:30000}
+  # Scheduler engine (P0-1) - table-driven polling
+  scheduler:
+    enabled: ${TEMPOREDATA_SCHEDULER_ENABLED:true}
+    scan-interval-ms: ${TEMPOREDATA_SCHEDULER_SCAN_INTERVAL_MS:10000}
+    lookback-seconds: ${TEMPOREDATA_SCHEDULER_LOOKBACK_SECONDS:300}
+  # Workflow DAG runtime (P0-2) / runtime management (P0-3)
+  runtime:
+    pause-max-seconds: ${TEMPOREDATA_RUNTIME_PAUSE_MAX_SECONDS:300}
+  ui:
+    # 前端静态外部目录（相对进程 CWD，建议仓库根运行）。留空则只用 classpath:/static/。
+    # 开发/联调时指向 temporedata-ui/dist，前端 build 后免重打包/免重启即可按请求读取。
+    static-dir: ${TEMPOREDATA_UI_STATIC_DIR:file:temporedata-ui/dist/}
+  # Data lineage module: precise assembly depth / layered exploration / cache & strategy.
+  lineage:
+    upstream-depth: ${TEMPOREDATA_LINEAGE_UPSTREAM_DEPTH:3}
+    downstream-depth: ${TEMPOREDATA_LINEAGE_DOWNSTREAM_DEPTH:3}
+    layer-size: ${TEMPOREDATA_LINEAGE_LAYER_SIZE:200}
+    graph-cache-max: ${TEMPOREDATA_LINEAGE_GRAPH_CACHE_MAX:100000}
+    time-window-enabled: ${TEMPOREDATA_LINEAGE_TIME_WINDOW_ENABLED:false}
+    strategy-threshold:
+      small: ${TEMPOREDATA_LINEAGE_STRATEGY_SMALL:1000}
+      medium: ${TEMPOREDATA_LINEAGE_STRATEGY_MEDIUM:10000}
+
+app:
+  file:
+    storage-type: local
+    upload-dir: ./uploads
+    # Limit per upload; enforce extension whitelist per bizType (default: OTHER).
+    max-size-per-file: ${APP_FILE_MAX_SIZE:268435456}
+    allow-ext:
+      RESOURCE: [jar, zip, tar.gz, xlsx, xls, csv, txt]
+      INGESTION: [csv]
+      WORKFLOW: [xlsx, xls, py, json, csv, txt]
+      OTHER: [jar, zip, tar.gz, xlsx, xls, csv, txt, json, py, pdf, doc, docx, png, jpg, jpeg, gif]
+    # Transparent compression (v1.0 compress doc): only text/data files, not RESOURCE bundles.
+    compress:
+      enabled: true
+      algorithm: gzip            # gzip | zstd
+      level: -1                  # gzip 0-9 / zstd 1-22; -1 = codec default
+      min-size: 1024
+      extend-ext:
+        - csv
+        - json
+        - xml
+        - txt
+        - log
+        - sql
+        - py
+        - md
+        - yml
+        - yaml
+        - properties
+        - sh
+      exclude-ext:
+        - zip
+        - gz
+        - tar
+        - jar
+        - 7z
+        - rar
+        - png
+        - jpg
+        - jpeg
+        - gif
+        - webp
+        - mp4
+        - mov
+        - mp3
+        - exe
+        - so
+        - dll
+        - xlsx
+        - xls
+      disabled-biz-types:
+        - RESOURCE
+      # Image optimization (optional, lossy; affects OTHER/WORKFLOW image uploads)
+      optimize-images: true
+      image-ext: jpg,jpeg,png
+      max-dim: 1920
+      quality: 0.8
+      # Small-file packaging (optional)
+      package-enabled: true
+      package-min-count: 1
+
+  clean:
+    cron: ${APP_FILE_CLEAN_CRON:0 0 3 * * *}   # daily 03:00 cleanup of soft-deleted objects
+
+logging:
+  level:
+    root: info
+    org.temporedata: debug
+  # Enrich every log line with request correlation context (v2.0 §21).
+  pattern:
+    level: "%5p [${spring.application.name:td},traceId:%X{traceId:-},userId:%X{userId:-},tenantId:%X{tenantId:-}]"

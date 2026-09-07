@@ -1,0 +1,8 @@
+org/temporedata/app/config/WebMvcConfig.class
+org/temporedata/app/config/WebMvcConfig$1.class
+org/temporedata/app/config/SwaggerConfig.class
+org/temporedata/app/config/HttpClientConfig.class
+org/temporedata/app/TemporeDataApplication.class
+org/temporedata/app/config/AsyncConfig.class
+org/temporedata/app/controller/SpaForwardController.class
+org/temporedata/app/config/FlywayConfig.class
