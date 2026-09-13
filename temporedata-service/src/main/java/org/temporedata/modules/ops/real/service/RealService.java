@@ -2,6 +2,7 @@ package org.temporedata.modules.ops.real.service;
 
 import org.temporedata.modules.ops.real.entity.RealEntity;
 import org.temporedata.modules.ops.real.repository.RealRepository;
+import org.temporedata.modules.ops.real.EngineLauncher;
 import org.temporedata.api.base.exceptions.BusinessException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,11 +19,18 @@ import java.util.*;
 public class RealService {
 
     private final RealRepository realRepository;
+    private final EngineLauncher engineLauncher;
 
     /**
      * Simulated log storage for real-time tasks.
      */
     private final Map<String, List<String>> taskLogs = new HashMap<>();
+
+    /**
+     * In-memory record of submitted jobs (taskId -> application/job id), used by stop().
+     * Rebuilt on each start.
+     */
+    private final Map<String, String> runningJobs = new HashMap<>();
 
     /**
      * Paginated list of real-time tasks.
@@ -84,36 +92,61 @@ public class RealService {
     }
 
     /**
-     * Start a real-time task.
+     * Submit the real-time task to the real compute engine (Flink / Spark) and, on
+     * success, mark it RUNNING with the reported application/job id. Fails honestly
+     * (persisting FAILED + throwing) when no engine binary is available or the submit
+     * exits non-zero.
      */
-    @Transactional
     public RealEntity start(String id) {
         RealEntity entity = get(id);
-        entity.setStatus("RUNNING");
-        RealEntity saved = realRepository.save(entity);
-        log.info("Started real-time task: id={}, name={}", id, entity.getName());
+        entity.setStatus("STARTING");
+        realRepository.save(entity);
+        String now = timestamp();
 
-        // Add initial log
-        String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        taskLogs.computeIfAbsent(id, k -> new ArrayList<>())
-                .add(now + " [INFO] Task started successfully.");
-        return saved;
+        try {
+            EngineLauncher.SubmitOutcome outcome = engineLauncher.submit(entity);
+            entity.setStatus("RUNNING");
+            if (outcome.appId() != null) {
+                runningJobs.put(id, outcome.appId());
+                log.info("Real-time task submitted: id={}, type={}, appId={}", id, entity.getType(), outcome.appId());
+            }
+            taskLogs.computeIfAbsent(id, k -> new ArrayList<>())
+                    .add(now + " [INFO] 已提交计算引擎，application/jobId=" + (outcome.appId() == null ? "?" : outcome.appId()));
+            return realRepository.save(entity);
+        } catch (BusinessException e) {
+            // No surrounding transaction here, so this FAILED save commits even though the
+            // exception then bubbles up and the caller sees an error response.
+            entity.setStatus("FAILED");
+            taskLogs.computeIfAbsent(id, k -> new ArrayList<>()).add(now + " [ERROR] " + e.getMessage());
+            realRepository.save(entity);
+            runningJobs.remove(id);
+            log.warn("Real-time task start failed: id={}, reason={}", id, e.getMessage());
+            throw e;
+        }
     }
 
     /**
-     * Stop a real-time task.
+     * Stop the running job via the engine CLI, then mark the task STOPPED.
      */
     @Transactional
     public RealEntity stop(String id) {
         RealEntity entity = get(id);
-        entity.setStatus("STOPPED");
-        RealEntity saved = realRepository.save(entity);
-        log.info("Stopped real-time task: id={}, name={}", id, entity.getName());
+        String appId = runningJobs.remove(id);
+        try {
+            engineLauncher.stop(entity, appId, appId);
+            entity.setStatus("STOPPED");
+            String now = timestamp();
+            taskLogs.computeIfAbsent(id, k -> new ArrayList<>())
+                    .add(now + " [INFO] 作业已停止 (appId=" + (appId == null ? "?" : appId) + ")");
+            return realRepository.save(entity);
+        } catch (BusinessException e) {
+            log.warn("Real-time task stop failed: id={}, reason={}", id, e.getMessage());
+            throw e;
+        }
+    }
 
-        String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        taskLogs.computeIfAbsent(id, k -> new ArrayList<>())
-                .add(now + " [INFO] Task stopped.");
-        return saved;
+    private String timestamp() {
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
     /**

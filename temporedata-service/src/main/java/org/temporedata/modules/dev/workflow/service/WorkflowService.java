@@ -9,7 +9,9 @@ import org.temporedata.api.dev.workflow.*;
 import org.temporedata.modules.dev.workflow.entity.WorkflowEdgeEntity;
 import org.temporedata.modules.dev.workflow.entity.WorkflowEntity;
 import org.temporedata.modules.dev.workflow.entity.WorkflowNodeEntity;
+import org.temporedata.modules.dev.workflow.entity.WorkflowVersionEntity;
 import org.temporedata.modules.dev.workflow.repository.WorkflowRepository;
+import org.temporedata.modules.dev.workflow.repository.WorkflowVersionRepository;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,7 @@ import static org.temporedata.common.cache.CacheConfig.CACHE_WORKFLOW;
 public class WorkflowService {
 
     private final WorkflowRepository workflowRepository;
+    private final WorkflowVersionRepository versionRepository;
     private final ObjectMapper objectMapper;
 
     // ---- CRUD ----
@@ -55,17 +58,26 @@ public class WorkflowService {
                 .nodesJson(toJson(req.getNodes()))
                 .edgesJson(toJson(req.getEdges()))
                 .build();
-        return toWorkflowRes(workflowRepository.save(entity));
+        entity = workflowRepository.save(entity);
+        snapshotVersion(entity, 1, "initial");
+        return toWorkflowRes(entity);
     }
 
     @Transactional
     @CacheEvict(value = CACHE_WORKFLOW, allEntries = true)
     public WorkflowRes update(String id, WorkflowReq req) {
         WorkflowEntity entity = findEntity(id);
+        requireEditable(entity, "update");
+        String newNodes = toJson(req.getNodes());
+        String newEdges = toJson(req.getEdges());
+        boolean changed = !sameJson(entity.getNodesJson(), newNodes) || !sameJson(entity.getEdgesJson(), newEdges);
+        int next = maxVersion(id) + 1;
+        // snapshot current definition before overwriting
+        if (changed) snapshotVersion(entity, next, "auto");
         entity.setName(req.getName());
         entity.setDescription(req.getDescription());
-        entity.setNodesJson(toJson(req.getNodes()));
-        entity.setEdgesJson(toJson(req.getEdges()));
+        entity.setNodesJson(newNodes);
+        entity.setEdgesJson(newEdges);
         return toWorkflowRes(workflowRepository.save(entity));
     }
 
@@ -111,15 +123,64 @@ public class WorkflowService {
         return result;
     }
 
+    // ---- Online / Offline ----
+
+    @Transactional
+    @CacheEvict(value = CACHE_WORKFLOW, allEntries = true)
+    public WorkflowRes online(String id) {
+        WorkflowEntity entity = findEntity(id);
+        entity.setStatus("ONLINE");
+        return toWorkflowRes(workflowRepository.save(entity));
+    }
+
+    @Transactional
+    @CacheEvict(value = CACHE_WORKFLOW, allEntries = true)
+    public WorkflowRes offline(String id) {
+        WorkflowEntity entity = findEntity(id);
+        entity.setStatus("OFFLINE");
+        return toWorkflowRes(workflowRepository.save(entity));
+    }
+
+    // ---- Versioning ----
+
+    @Cacheable(value = CACHE_WORKFLOW)
+    public List<WorkflowVersionEntity> versions(String id) {
+        return versionRepository.findByWorkflowIdOrderByVersionNoDesc(id);
+    }
+
+    @Transactional
+    @CacheEvict(value = CACHE_WORKFLOW, allEntries = true)
+    public WorkflowRes rollback(String id, String versionId) {
+        WorkflowEntity entity = findEntity(id);
+        requireEditable(entity, "rollback");
+        WorkflowVersionEntity v = versionRepository.findById(versionId)
+                .orElseThrow(() -> new BusinessException("Workflow version not found: " + versionId));
+        String newNodes = v.getNodesJson();
+        String newEdges = v.getEdgesJson();
+        boolean changed = !sameJson(entity.getNodesJson(), newNodes) || !sameJson(entity.getEdgesJson(), newEdges);
+        if (changed) snapshotVersion(entity, maxVersion(id) + 1, "rollback to v" + v.getVersionNo());
+        entity.setNodesJson(newNodes);
+        entity.setEdgesJson(newEdges);
+        if (v.getName() != null && !v.getName().isBlank()) entity.setName(v.getName());
+        return toWorkflowRes(workflowRepository.save(entity));
+    }
+
     // ---- Schedule ----
 
     @Transactional
     @CacheEvict(value = CACHE_WORKFLOW, allEntries = true)
-    public WorkflowRes schedule(String id, String cronExpression, Boolean enabled) {
+    public WorkflowRes schedule(String id, String cronExpression, Boolean enabled,
+                                String schedulePolicy, String scheduleMissfire) {
         WorkflowEntity entity = findEntity(id);
         entity.setScheduleCron(cronExpression);
         if (enabled != null) {
             entity.setScheduleEnabled(enabled);
+        }
+        if (schedulePolicy != null) {
+            entity.setSchedulePolicy(schedulePolicy);
+        }
+        if (scheduleMissfire != null) {
+            entity.setScheduleMissfire(scheduleMissfire);
         }
         return toWorkflowRes(workflowRepository.save(entity));
     }
@@ -139,6 +200,39 @@ public class WorkflowService {
                 .orElseThrow(() -> new BusinessException("Workflow not found: " + id));
     }
 
+    private void requireEditable(WorkflowEntity entity, String op) {
+        if ("ONLINE".equals(entity.getStatus())) {
+            throw new BusinessException("Workflow is ONLINE, please take it offline before " + op);
+        }
+    }
+
+    private boolean sameJson(String a, String b) {
+        return a == null ? b == null : a.equals(b);
+    }
+
+    private int maxVersion(String workflowId) {
+        return versionRepository.findFirstByWorkflowIdOrderByVersionNoDesc(workflowId)
+                .map(WorkflowVersionEntity::getVersionNo).orElse(0);
+    }
+
+    private void snapshotVersion(WorkflowEntity e, int versionNo, String remark) {
+        try {
+            WorkflowVersionEntity v = WorkflowVersionEntity.builder()
+                    .workflowId(e.getId())
+                    .versionNo(versionNo)
+                    .name(e.getName())
+                    .nodesJson(e.getNodesJson())
+                    .edgesJson(e.getEdgesJson())
+                    .remark(remark)
+                    .createBy("system")
+                    .createTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                    .build();
+            versionRepository.save(v);
+        } catch (Exception ex) {
+            log.warn("Failed to snapshot workflow version: {}", e.getId(), ex);
+        }
+    }
+
     private WorkflowRes toWorkflowRes(WorkflowEntity entity) {
         WorkflowRes res = new WorkflowRes();
         res.setId(entity.getId());
@@ -146,6 +240,8 @@ public class WorkflowService {
         res.setDescription(entity.getDescription());
         res.setStatus(entity.getStatus());
         res.setCronExpression(entity.getScheduleCron());
+        res.setSchedulePolicy(entity.getSchedulePolicy());
+        res.setScheduleMissfire(entity.getScheduleMissfire());
         res.setCreateTime(entity.getCreateDateTime() != null
                 ? entity.getCreateDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
                 : null);

@@ -7,8 +7,8 @@ import org.temporedata.modules.gov.meta.entity.MetaSyncLogEntity;
 import org.temporedata.modules.gov.meta.repository.MetaColumnRepository;
 import org.temporedata.modules.gov.meta.repository.MetaSyncLogRepository;
 import org.temporedata.modules.gov.meta.repository.MetaTableRepository;
-import org.temporedata.modules.integration.datasource.entity.DatasourceEntity;
-import org.temporedata.modules.integration.datasource.repository.DatasourceRepository;
+import org.temporedata.integration.core.datasource.entity.DatasourceEntity;
+import org.temporedata.integration.core.datasource.repository.DatasourceRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

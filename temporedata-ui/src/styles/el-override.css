@@ -1,0 +1,77 @@
+/* ============================================================
+ * Element Plus theme overrides — map EP CSS vars to the Figma
+ * design tokens (primary #2563eb, small fonts, light surfaces).
+ * ============================================================ */
+:root {
+  --el-color-primary: var(--td-primary);
+  --el-color-primary-light-3: #5b8def;
+  --el-color-primary-light-5: #85aaf3;
+  --el-color-primary-light-7: #aec6f7;
+  --el-color-primary-light-8: #c6d8fa;
+  --el-color-primary-light-9: #e8f1fe;
+  --el-color-primary-dark-2: #1d4ed8;
+
+  --el-color-success: var(--td-success);
+  --el-color-warning: var(--td-warning);
+  --el-color-danger: var(--td-danger);
+  --el-color-error: var(--td-danger);
+  --el-color-info: var(--td-info);
+
+  --el-bg-color: #ffffff;
+  --el-bg-color-page: var(--td-bg);
+  --el-bg-color-overlay: #ffffff;
+  --el-fill-color: #f1f5f9;
+  --el-fill-color-light: #f8fafc;
+  --el-fill-color-lighter: #f8fafc;
+  --el-fill-color-blank: #ffffff;
+
+  --el-text-color-primary: var(--td-text-1);
+  --el-text-color-regular: var(--td-text-2);
+  --el-text-color-secondary: var(--td-text-3);
+  --el-text-color-placeholder: var(--td-text-4);
+  --el-text-color-disabled: var(--td-text-4);
+
+  --el-border-color: var(--td-border);
+  --el-border-color-light: var(--td-border);
+  --el-border-color-lighter: var(--td-border);
+  --el-border-color-extra-light: var(--td-border-light);
+  --el-border-color-hover: var(--td-primary);
+
+  --el-border-radius-base: 6px;
+  --el-border-radius-small: 4px;
+  --el-border-radius-round: 20px;
+
+  --el-font-size-base: 12px;
+  --el-font-size-small: 12px;
+  --el-font-size-extra-small: 11px;
+  --el-font-size-medium: 13px;
+  --el-font-size-large: 14px;
+
+  --el-box-shadow-light: var(--td-card-shadow);
+  --el-box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+/* Compact table headers per Figma: light slate header row */
+.el-table th.el-table__cell {
+  background-color: #f8fafc !important;
+  color: var(--td-text-2) !important;
+  font-weight: 600;
+}
+
+.el-table .el-table__row:hover > td.el-table__cell {
+  background-color: #f8fafc !important;
+}
+
+.el-table--small .el-table__cell {
+  padding: 6px 0;
+}
+
+/* Consistent small buttons */
+.el-button {
+  font-weight: 500;
+}
+
+/* Dialog radius matches card radius */
+.el-dialog {
+  border-radius: 12px;
+}

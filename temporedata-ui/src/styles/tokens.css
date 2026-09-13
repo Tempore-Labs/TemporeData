@@ -1,0 +1,52 @@
+/* ============================================================
+ * TemporeData design tokens — translated from the Figma prototype
+ * (tempore-ui). Used as raw CSS variables; Element Plus overrides
+ * live in el-override.css.
+ * ============================================================ */
+:root {
+  /* Brand / primary */
+  --td-primary: #2563eb;
+  --td-primary-hover: #1d4ed8;
+  --td-primary-soft: #e8f1fe;
+  --td-primary-border: #bfdbfe;
+
+  /* Surfaces */
+  --td-bg: #f0f2f5;
+  --td-surface: #ffffff;
+  --td-border: #e2e8f0;
+  --td-border-light: #f1f5f9;
+
+  /* Text scale */
+  --td-text-1: #0f172a;
+  --td-text-2: #475569;
+  --td-text-3: #64748b;
+  --td-text-4: #94a3b8;
+
+  /* Semantic colors */
+  --td-success: #10b981;
+  --td-success-soft: #d1fae5;
+  --td-success-text: #065f46;
+  --td-warning: #f59e0b;
+  --td-warning-soft: #fef3c7;
+  --td-warning-text: #92400e;
+  --td-danger: #dc2626;
+  --td-danger-soft: #fee2e2;
+  --td-purple: #8b5cf6;
+  --td-purple-soft: #ede9fe;
+  --td-info: #64748b;
+
+  /* Typography */
+  --td-font-sans: 'Inter', system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --td-font-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
+
+  /* Elevation & shape */
+  --td-card-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+  --td-card-shadow-hover: 0 4px 12px rgba(15, 23, 42, 0.1);
+  --td-radius-lg: 12px;
+  --td-radius-md: 8px;
+
+  /* Layout dimensions (matches Figma) */
+  --td-sider-width: 208px;
+  --td-sider-collapsed: 64px;
+  --td-topbar-height: 56px;
+}

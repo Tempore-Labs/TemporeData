@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.temporedata</groupId>
+        <artifactId>temporedata</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>temporedata-service-gateway</artifactId>
+    <name>temporedata-service-gateway</name>
+    <description>[Enterprise P1] Data API gateway: SQL/Table-to-API / OAuth2 &amp; AppKey auth / rate limiting &amp; quota / Redis cache / call audit</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.temporedata</groupId>
+            <artifactId>temporedata-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- Auth tokens / RBAC policies reused by the gateway for uniform exposure -->
+        <dependency>
+            <groupId>org.temporedata</groupId>
+            <artifactId>temporedata-security</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- REST controller for gateway auth / rate-limit probes -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+    </dependencies>
+</project>

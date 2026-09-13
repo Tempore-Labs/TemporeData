@@ -2,6 +2,9 @@
 /Users/kodlien/Documents/TemporeData/temporedata-service/src/test/java/org/temporedata/modules/dev/perm/service/PermissionServiceTest.java
 /Users/kodlien/Documents/TemporeData/temporedata-service/src/test/java/org/temporedata/modules/gov/security/SqlPlanRewriterTest.java
 /Users/kodlien/Documents/TemporeData/temporedata-service/src/test/java/org/temporedata/modules/gov/security/service/SecurityServiceTest.java
+/Users/kodlien/Documents/TemporeData/temporedata-service/src/test/java/org/temporedata/modules/dev/workflow/service/WorkflowLineageServiceTest.java
+/Users/kodlien/Documents/TemporeData/temporedata-service/src/test/java/org/temporedata/modules/dev/workflow/runner/WorkflowRunnerTest.java
 /Users/kodlien/Documents/TemporeData/temporedata-service/src/test/java/org/temporedata/modules/dev/workflow/runner/ConditionEvaluatorTest.java
 /Users/kodlien/Documents/TemporeData/temporedata-service/src/test/java/org/temporedata/modules/ops/audit/service/AuditServiceTest.java
 /Users/kodlien/Documents/TemporeData/temporedata-service/src/test/java/org/temporedata/modules/dev/workflow/runner/DruidSqlParserLineageTest.java
+/Users/kodlien/Documents/TemporeData/temporedata-service/src/test/java/org/temporedata/modules/dev/workflow/service/WorkflowServiceTest.java

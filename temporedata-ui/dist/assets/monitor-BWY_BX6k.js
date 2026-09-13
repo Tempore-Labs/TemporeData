@@ -1,1 +1,0 @@
-import{a}from"./index-B8kRpthL.js";const n={system:()=>a.get("/api/monitor/system").then(t=>t.data.data),cluster:t=>a.get("/api/monitor/cluster",{params:{clusterId:t}}).then(e=>e.data.data),instance:()=>a.get("/api/monitor/instance").then(t=>t.data.data)};export{n as m};

@@ -66,6 +66,12 @@ public class DruidSqlParser implements SqlParser {
         try {
             DbType dbType = registry.dbType(effective);
             SQLStatement stmt = SQLParserUtils.createSQLStatementParser(sql, dbType).parseStatement();
+            if (stmt == null) {
+                // e.g. a comment-only / empty payload: nothing to infer - degrade gracefully.
+                res.setSuccess(false);
+                res.setMessage("未解析出可识别的 SQL 语句");
+                return res;
+            }
             LineageSchemaVisitor visitor = new LineageSchemaVisitor();
             stmt.accept(visitor);
             String target = resolveTarget(stmt);
@@ -82,8 +88,15 @@ public class DruidSqlParser implements SqlParser {
             List<ColumnLineage> cl = new ArrayList<>();
             collectColumnLineage(stmt, cl);
             res.setColumnLineage(cl);
-            res.setSuccess(target != null || !sources.isEmpty());
+            // success = the statement parsed. A target/source-less SELECT (e.g. "SELECT 1")
+            // is still a valid parse; the empty table/column lists reflect that there is no
+            // lineage, rather than being a failure.
+            res.setSuccess(true);
             res.setMessage("OK");
+        } catch (IndexOutOfBoundsException e) {
+            // Druid internal indexing issue on unusual input - do not leak an internal error.
+            res.setSuccess(false);
+            res.setMessage("无法解析该 SQL，可能缺少可执行的语句");
         } catch (Exception e) {
             res.setSuccess(false);
             res.setMessage("Parse error: " + e.getMessage());

@@ -38,6 +38,40 @@
             <artifactId>temporedata-common</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!-- P0-2 partial dedup: connectivity/datasource/secret/security + file low-level moved here -->
+        <dependency>
+            <groupId>org.temporedata</groupId>
+            <artifactId>temporedata-integration</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- P0: dataset/metadata capability (entities/repos/services) composed into the app -->
+        <dependency>
+            <groupId>org.temporedata</groupId>
+            <artifactId>temporedata-metadata</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- P0: quality (rule/gate) and asset (catalog/metric) capability -->
+        <dependency>
+            <groupId>org.temporedata</groupId>
+            <artifactId>temporedata-quality</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.temporedata</groupId>
+            <artifactId>temporedata-asset</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- P1: data contract validation + Data API gateway -->
+        <dependency>
+            <groupId>org.temporedata</groupId>
+            <artifactId>temporedata-contract</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.temporedata</groupId>
+            <artifactId>temporedata-service-gateway</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <!-- 数据源 SPI 已并入 temporedata-api；内置方言由本模块携带 -->
         <dependency>
             <groupId>org.temporedata</groupId>

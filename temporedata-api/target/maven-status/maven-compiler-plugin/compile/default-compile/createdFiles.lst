@@ -112,6 +112,7 @@ org/temporedata/api/dev/workflow/WorkflowExecuteRes.class
 org/temporedata/api/gov/catalog/CatalogTreeRes.class
 org/temporedata/api/sys/account/ChangePasswordReq.class
 org/temporedata/api/gov/lineage/CycleAnalysisRes.class
+org/temporedata/api/dataset/DatasetDTO.class
 org/temporedata/api/datasource/sql/Dialect.class
 org/temporedata/api/ops/dashboard/DashboardRes$DataSourceStat.class
 org/temporedata/api/dev/workflow/RuntimeCommandRes.class

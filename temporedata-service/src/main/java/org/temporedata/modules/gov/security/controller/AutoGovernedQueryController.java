@@ -8,7 +8,7 @@ import org.temporedata.common.util.Crypto;
 import org.temporedata.modules.dev.workflow.runner.JdbcSupport;
 import org.temporedata.modules.gov.security.AccessPolicyResolver;
 import org.temporedata.modules.gov.security.DataAccessGovernor;
-import org.temporedata.modules.integration.datasource.entity.DatasourceEntity;
+import org.temporedata.integration.core.datasource.entity.DatasourceEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

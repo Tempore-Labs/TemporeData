@@ -2,8 +2,8 @@ package org.temporedata.modules.gov.catalog.service;
 
 import org.temporedata.modules.gov.catalog.entity.CatalogEntity;
 import org.temporedata.modules.gov.catalog.repository.CatalogRepository;
-import org.temporedata.modules.integration.datasource.entity.DatasourceEntity;
-import org.temporedata.modules.integration.datasource.repository.DatasourceRepository;
+import org.temporedata.integration.core.datasource.entity.DatasourceEntity;
+import org.temporedata.integration.core.datasource.repository.DatasourceRepository;
 import org.temporedata.api.base.exceptions.BusinessException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

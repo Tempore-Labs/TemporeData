@@ -1,22 +1,73 @@
 <template>
-  <span class="td-badge" :class="`is-${tone}`"><i class="dot" />{{ label }}</span>
+  <span class="badge" :style="{ background: color + '2e', color }">
+    <span class="badge-dot" :style="{ background: color }" />
+    {{ text }}
+  </span>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue'
-const props = defineProps({
-  value: { type: String, default: '' },
-  toneMap: { type: Object, default: () => ({ healthy: 'success', running: 'primary', warning: 'warning', critical: 'danger', stopped: 'info', unknown: 'info', maintenance: 'warning' }) }
-})
-const tone = computed(() => props.toneMap[props.value] || 'info')
-const label = computed(() => (props.value === '' ? 'unknown' : props.value))
+
+const STATUS_COLORS: Record<string, string> = {
+  success: '#10b981',
+  passed: '#10b981',
+  pass: '#10b981',
+  running: '#2563eb',
+  active: '#2563eb',
+  ACTIVE: '#2563eb',
+  failed: '#dc2626',
+  fail: '#dc2626',
+  error: '#dc2626',
+  warning: '#f59e0b',
+  warn: '#f59e0b',
+  pending: '#f59e0b',
+  open: '#f59e0b',
+  OPEN: '#f59e0b',
+  closed: '#94a3b8',
+  RESOLVED: '#10b981',
+  resolved: '#10b981',
+}
+
+const STATUS_LABELS: Record<string, string> = {
+  success: '成功',
+  passed: '通过',
+  pass: '通过',
+  running: '运行中',
+  active: '启用',
+  ACTIVE: '启用',
+  failed: '失败',
+  fail: '失败',
+  error: '失败',
+  warning: '警告',
+  warn: '警告',
+  pending: '待处理',
+  open: '待处理',
+  OPEN: '待处理',
+  closed: '已关闭',
+  RESOLVED: '已解决',
+  resolved: '已解决',
+}
+
+const props = defineProps<{ status: string; text?: string; color?: string }>()
+
+const color = computed(() => props.color || STATUS_COLORS[props.status] || '#64748b')
+const text = computed(() => props.text || STATUS_LABELS[props.status] || props.status)
 </script>
 
 <style scoped>
-.td-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; padding: 2px 8px; border-radius: 999px; background: #f1f5f9; color: #475569; }
-.td-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-.is-success { color: #059669; background: #ecfdf5; }
-.is-danger { color: #dc2626; background: #fef2f2; }
-.is-warning { color: #d97706; background: #fffbeb; }
-.is-primary { color: #2563eb; background: #eff6ff; }
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-size: 10px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
 </style>

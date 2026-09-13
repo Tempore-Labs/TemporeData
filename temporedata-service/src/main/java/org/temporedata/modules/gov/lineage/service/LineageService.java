@@ -526,7 +526,7 @@ public class LineageService {
     @Cacheable(value = CACHE_LINEAGE, unless = "#result == null || #result.isEmpty()")
     public List<Map<String, Object>> search(String keyword) {
         if (keyword == null || keyword.trim().isEmpty()) {
-            throw new BusinessException("Keyword is required");
+            return java.util.Collections.emptyList();
         }
         String kw = keyword.toLowerCase();
         List<LineageEntity> matches = lineageRepository.findAll().stream()
@@ -556,6 +556,7 @@ public class LineageService {
         }
         Map<String, Object> item = new LinkedHashMap<>();
         item.put("id", id);
+        item.put("nodeId", id);
         item.put("name", name != null ? name : id);
         item.put("nodeType", nodeType != null ? nodeType : "TABLE");
         result.add(item);

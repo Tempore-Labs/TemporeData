@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.temporedata</groupId>
+        <artifactId>temporedata</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>temporedata-integration</artifactId>
+    <name>temporedata-integration</name>
+    <description>
+        [Enterprise P0 - deduplicated] Data integration.
+        org.temporedata.integration.core  - connectivity / secret / file / datasource (migrated
+          from temporedata-service modules/integration in the P0-2 partial dedup; only the
+          service-orchestration pieces of file (FileService/FileCleanupTask/FileController) stay
+          in temporedata-service to avoid a module dependency cycle via ops.audit.AuditService).
+        org.temporedata.integration.etl   - Connector SPI / CDC engine / batch sync (new).
+        Boundary: lower-level atomic data movement &amp; connectivity only. Cost/FinOps ->
+        temporedata-service cost; AI assembly -> temporedata-service ai.
+    </description>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.temporedata</groupId>
+                <artifactId>temporedata-bom</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <!-- Shared API contracts (DatasetDTO, integration Req/Res, datasource SPI) -->
+        <dependency>
+            <groupId>org.temporedata</groupId>
+            <artifactId>temporedata-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.temporedata</groupId>
+            <artifactId>temporedata-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- org.temporedata.common.* (Crypto / CacheConfig / lockers) actually live in support -->
+        <dependency>
+            <groupId>org.temporedata</groupId>
+            <artifactId>temporedata-support</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- REST controllers + JPA entities/repositories moved into .core -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <!-- Maven coordinate dynamic resolution (Aether / maven-resolver) used by driver plugin loader -->
+        <dependency>
+            <groupId>org.apache.maven.resolver</groupId>
+            <artifactId>maven-resolver-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.resolver</groupId>
+            <artifactId>maven-resolver-impl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.resolver</groupId>
+            <artifactId>maven-resolver-connector-basic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.resolver</groupId>
+            <artifactId>maven-resolver-transport-http</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.resolver</groupId>
+            <artifactId>maven-resolver-supplier</artifactId>
+        </dependency>
+
+        <!-- Object storage (S3-compatible adapter) + zstd compression for file storage -->
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>s3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.luben</groupId>
+            <artifactId>zstd-jni</artifactId>
+        </dependency>
+    </dependencies>
+</project>

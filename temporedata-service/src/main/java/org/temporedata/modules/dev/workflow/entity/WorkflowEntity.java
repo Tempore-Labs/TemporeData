@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Entity @Table(name = "zy_workflow")
 public class WorkflowEntity {
 
-    @Id @GeneratedValue(generator = "uuid2") @GenericGenerator(name = "uuid2", strategy = "uuid2") @Column(length = 32)
+    @Id @GeneratedValue(generator = "uuid2") @GenericGenerator(name = "uuid2", strategy = "uuid2") @Column(length = 36)
     private String id;
 
     @CreationTimestamp @Column(updatable = false)
@@ -45,6 +45,14 @@ public class WorkflowEntity {
 
     @Column(name = "schedule_enabled")
     private Boolean scheduleEnabled;
+
+    /** Scheduling collision policy: SERIAL | PARALLEL | DROP. */
+    @Column(name = "schedule_policy")
+    private String schedulePolicy;
+
+    /** Misfire strategy for missed runs: SKIP | BACKFILL. */
+    @Column(name = "schedule_missfire")
+    private String scheduleMissfire;
 
     @Column(columnDefinition = "TEXT")
     private String description;

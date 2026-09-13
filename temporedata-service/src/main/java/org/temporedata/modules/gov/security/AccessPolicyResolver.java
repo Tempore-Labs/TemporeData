@@ -1,8 +1,8 @@
 package org.temporedata.modules.gov.security;
 
 import org.temporedata.api.gov.security.AccessPolicy;
-import org.temporedata.modules.integration.security.entity.MaskRuleEntity;
-import org.temporedata.modules.integration.security.repository.MaskRuleRepository;
+import org.temporedata.integration.core.security.entity.MaskRuleEntity;
+import org.temporedata.integration.core.security.repository.MaskRuleRepository;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 

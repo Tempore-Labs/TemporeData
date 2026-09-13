@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Entity @Table(name = "zy_user")
 public class UserEntity {
 
-    @Id @GeneratedValue(generator = "uuid2") @GenericGenerator(name = "uuid2", strategy = "uuid2") @Column(length = 32)
+    @Id @GeneratedValue(generator = "uuid2") @GenericGenerator(name = "uuid2", strategy = "uuid2") @Column(length = 36)
     private String id;
 
     @CreationTimestamp @Column(name = "create_time", updatable = false)

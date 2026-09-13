@@ -3,8 +3,8 @@ package org.temporedata.modules.gov.meta.service;
 import org.temporedata.modules.gov.meta.entity.MetaColumnEntity;
 import org.temporedata.modules.gov.meta.repository.MetaColumnRepository;
 import org.temporedata.modules.gov.meta.spi.MetaPostProcessor;
-import org.temporedata.modules.integration.security.entity.MaskRuleEntity;
-import org.temporedata.modules.integration.security.repository.MaskRuleRepository;
+import org.temporedata.integration.core.security.entity.MaskRuleEntity;
+import org.temporedata.integration.core.security.repository.MaskRuleRepository;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 

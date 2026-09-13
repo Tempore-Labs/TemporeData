@@ -1,0 +1,8 @@
+org/temporedata/contract/entity/ContractEntity.class
+org/temporedata/contract/CompatibilityMode.class
+org/temporedata/contract/Contract.class
+org/temporedata/contract/service/ContractService.class
+org/temporedata/contract/entity/ContractEntity$ContractEntityBuilder.class
+org/temporedata/contract/SchemaCompatChecker.class
+org/temporedata/contract/controller/ContractController.class
+org/temporedata/contract/repository/ContractRepository.class

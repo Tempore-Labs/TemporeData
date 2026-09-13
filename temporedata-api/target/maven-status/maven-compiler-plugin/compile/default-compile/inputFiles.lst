@@ -16,6 +16,7 @@
 /Users/kodlien/Documents/TemporeData/temporedata-api/src/main/java/org/temporedata/api/dev/schedule/TaskDefineReq.java
 /Users/kodlien/Documents/TemporeData/temporedata-api/src/main/java/org/temporedata/api/asset/tag/TagBindingRes.java
 /Users/kodlien/Documents/TemporeData/temporedata-api/src/main/java/org/temporedata/api/sys/tenant/TenantReq.java
+/Users/kodlien/Documents/TemporeData/temporedata-api/src/main/java/org/temporedata/api/contract/ErrorCode.java
 /Users/kodlien/Documents/TemporeData/temporedata-api/src/main/java/org/temporedata/api/svc/report/ReportRes.java
 /Users/kodlien/Documents/TemporeData/temporedata-api/src/main/java/org/temporedata/api/sys/preference/PreferenceBatchReq.java
 /Users/kodlien/Documents/TemporeData/temporedata-api/src/main/java/org/temporedata/api/ops/ingestion/IngestionTaskRes.java
@@ -71,6 +72,7 @@
 /Users/kodlien/Documents/TemporeData/temporedata-api/src/main/java/org/temporedata/api/asset/permapproval/PermApprovalReq.java
 /Users/kodlien/Documents/TemporeData/temporedata-api/src/main/java/org/temporedata/api/dev/workflow/WorkflowNodeInstanceRes.java
 /Users/kodlien/Documents/TemporeData/temporedata-api/src/main/java/org/temporedata/api/datasource/sql/SqlParseResult.java
+/Users/kodlien/Documents/TemporeData/temporedata-api/src/main/java/org/temporedata/api/contract/ApiResponse.java
 /Users/kodlien/Documents/TemporeData/temporedata-api/src/main/java/org/temporedata/api/gov/meta/MetaLineageRes.java
 /Users/kodlien/Documents/TemporeData/temporedata-api/src/main/java/org/temporedata/api/sys/user/UserRes.java
 /Users/kodlien/Documents/TemporeData/temporedata-api/src/main/java/org/temporedata/api/ops/cluster/ClusterNodeReq.java
@@ -82,6 +84,7 @@
 /Users/kodlien/Documents/TemporeData/temporedata-api/src/main/java/org/temporedata/api/sys/agent/AgentChatRes.java
 /Users/kodlien/Documents/TemporeData/temporedata-api/src/main/java/org/temporedata/api/gov/security/DataLevelReq.java
 /Users/kodlien/Documents/TemporeData/temporedata-api/src/main/java/org/temporedata/api/gov/meta/MetaTableRes.java
+/Users/kodlien/Documents/TemporeData/temporedata-api/src/main/java/org/temporedata/api/dataset/DatasetDTO.java
 /Users/kodlien/Documents/TemporeData/temporedata-api/src/main/java/org/temporedata/api/dev/workflow/WorkflowNodeReq.java
 /Users/kodlien/Documents/TemporeData/temporedata-api/src/main/java/org/temporedata/api/gov/audit/AuditReportRes.java
 /Users/kodlien/Documents/TemporeData/temporedata-api/src/main/java/org/temporedata/api/integration/datasource/DatasourceReq.java

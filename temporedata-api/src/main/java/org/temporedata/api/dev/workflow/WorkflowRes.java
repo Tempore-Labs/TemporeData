@@ -20,6 +20,10 @@ public class WorkflowRes {
 
     private String cronExpression;
 
+    private String schedulePolicy;
+
+    private String scheduleMissfire;
+
     private List<WorkflowNodeRes> nodes;
 
     private List<WorkflowEdgeRes> edges;

@@ -3,8 +3,8 @@ package org.temporedata.modules.gov.meta.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.temporedata.common.util.Crypto;
-import org.temporedata.modules.integration.datasource.entity.DatasourceEntity;
-import org.temporedata.modules.integration.datasource.repository.DatasourceRepository;
+import org.temporedata.integration.core.datasource.entity.DatasourceEntity;
+import org.temporedata.integration.core.datasource.repository.DatasourceRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 

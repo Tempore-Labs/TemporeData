@@ -2,8 +2,8 @@ package org.temporedata.modules.dev.workflow.runner;
 
 import lombok.extern.slf4j.Slf4j;
 import org.temporedata.modules.dev.workflow.entity.WorkflowNodeEntity;
-import org.temporedata.modules.integration.datasource.entity.DatasourceEntity;
-import org.temporedata.modules.integration.datasource.repository.DatasourceRepository;
+import org.temporedata.integration.core.datasource.entity.DatasourceEntity;
+import org.temporedata.integration.core.datasource.repository.DatasourceRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;

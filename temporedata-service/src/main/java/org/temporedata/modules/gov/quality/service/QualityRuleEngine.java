@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.temporedata.api.gov.quality.QualityRunRes;
 import org.temporedata.modules.dev.workflow.runner.JdbcSupport;
 import org.temporedata.modules.gov.quality.entity.QualityEntity;
-import org.temporedata.modules.integration.datasource.entity.DatasourceEntity;
-import org.temporedata.modules.integration.datasource.repository.DatasourceRepository;
+import org.temporedata.integration.core.datasource.entity.DatasourceEntity;
+import org.temporedata.integration.core.datasource.repository.DatasourceRepository;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;

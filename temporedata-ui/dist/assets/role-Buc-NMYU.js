@@ -1,1 +1,0 @@
-import{a as t}from"./index-B8kRpthL.js";const p={list:()=>t.get("/api/role").then(a=>a.data.data),create:a=>t.post("/api/role",a).then(e=>e.data.data),update:(a,e)=>t.put(`/api/role/${a}`,e).then(d=>d.data.data),delete:a=>t.delete(`/api/role/${a}`).then(e=>e.data.data),members:a=>t.get(`/api/role/${a}/members`).then(e=>e.data.data)};export{p as r};

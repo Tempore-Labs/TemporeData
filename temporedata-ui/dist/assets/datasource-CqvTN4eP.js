@@ -1,0 +1,1 @@
+import{c as e,e as t,b as o,x as p}from"./index-D8q7sVdr.js";const u={page:a=>e("/datasource/page",a),list:()=>e("/datasource/list"),get:a=>e(`/datasource/${a}`),create:a=>t("/datasource",a),update:(a,s)=>p(`/datasource/${a}`,s),remove:a=>o(`/datasource/${a}`),test:a=>t(`/datasource/${a}/test`),pluginTypes:()=>e("/datasource/plugins/types")};export{u as d};

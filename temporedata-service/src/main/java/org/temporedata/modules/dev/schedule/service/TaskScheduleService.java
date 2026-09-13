@@ -46,6 +46,9 @@ public class TaskScheduleService {
     // ---- Constant task meta ----
     private static final String STATUS_NORMAL = "NORMAL";
 
+    /** Hour used to derive a deterministic trigger time per backfilled biz date. */
+    private static final int DEFAULT_BACKFILL_TRIGGER_HOUR = 8;
+
     // ---- Task definitions ----
 
     @Transactional(readOnly = true)
@@ -199,10 +202,16 @@ public class TaskScheduleService {
                 .map(inst -> inst.getInstanceNo() + 1)
                 .orElse(1L);
 
+        // Derive triggerTime deterministically from the business date instead of
+        // LocalDateTime.now() so a backfill spanning multiple days never collides
+        // on the (task_id, trigger_time) unique key within the same second. The
+        // stored value is truncated to second precision by the DATETIME column.
+        LocalDateTime triggerTime = LocalDate.parse(bizDate).atTime(DEFAULT_BACKFILL_TRIGGER_HOUR, 0);
+
         TaskInstanceEntity instance = TaskInstanceEntity.builder()
                 .taskId(taskId)
                 .instanceNo(nextNo)
-                .triggerTime(LocalDateTime.now())
+                .triggerTime(triggerTime)
                 .bizDate(bizDate)
                 .status("RUNNING")
                 .startTime(LocalDateTime.now())

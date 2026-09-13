@@ -11,7 +11,7 @@ import java.util.Map;
 @Entity @Table(name = "zy_query")
 public class QueryEntity {
 
-    @Id @GeneratedValue(generator = "uuid2") @GenericGenerator(name = "uuid2", strategy = "uuid2") @Column(length = 32)
+    @Id @GeneratedValue(generator = "uuid2") @GenericGenerator(name = "uuid2", strategy = "uuid2") @Column(length = 36)
     private String id;
 
     @CreationTimestamp @Column(updatable = false)

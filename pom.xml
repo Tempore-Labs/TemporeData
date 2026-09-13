@@ -26,6 +26,15 @@
         <module>temporedata-security</module>
         <module>temporedata-service</module>
         <module>temporedata-datasource-plugin</module>
+        <!-- Enterprise: Phase-0 flat modules (v2.1 calibrated). Order is hand-written;
+             Maven reactor resolves topologically, so quality->metadata etc. stay valid. -->
+        <module>temporedata-integration</module>
+        <module>temporedata-development</module>
+        <module>temporedata-metadata</module>
+        <module>temporedata-quality</module>
+        <module>temporedata-asset</module>
+        <module>temporedata-service-gateway</module>
+        <module>temporedata-contract</module>
         <module>temporedata-server</module>
     </modules>
 

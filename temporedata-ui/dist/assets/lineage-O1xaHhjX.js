@@ -1,0 +1,1 @@
+import{c as a}from"./index-D8q7sVdr.js";const o={graph:(e,r=3)=>a("/lineage/graph",{nodeId:e,maxDepth:r}),search:e=>a("/lineage/search",{keyword:e}),overview:()=>a("/lineage/overview")};export{o as l};

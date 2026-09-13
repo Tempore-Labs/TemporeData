@@ -9,7 +9,7 @@ import javax.persistence.*; import java.time.LocalDateTime;
 @Entity @Table(name = "zy_ingestion")
 public class IngestionEntity {
 
-    @Id @GeneratedValue(generator = "uuid2") @GenericGenerator(name = "uuid2", strategy = "uuid2") @Column(length = 32)
+    @Id @GeneratedValue(generator = "uuid2") @GenericGenerator(name = "uuid2", strategy = "uuid2") @Column(length = 36)
     private String id;
 
     @CreationTimestamp @Column(updatable = false)

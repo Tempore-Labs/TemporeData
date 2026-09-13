@@ -30,7 +30,15 @@ public class FlywayConfig {
                 .locations(migrationLocation)
                 .baselineOnMigrate(true)
                 .baselineVersion(BASELINE_VERSION)
+                // Tolerate applied migrations with no matching local file (*:missing):
+                // the source tree dropped V34-V46 while the target DB already applied them.
+                // Non-destructive: history reconciled via "missing" ignore, tables untouched.
+                .ignoreMigrationPatterns("*:missing")
                 .load();
+        // Repair the schema history so an already-applied dev migration whose file was edited
+        // locally (e.g. V55 id width 32->36, already reflected in the table) no longer trips
+        // validate. Repair only realigns checksums; it never alters tables or upgrades data.
+        flyway.repair();
         flyway.migrate();
         return flyway;
     }

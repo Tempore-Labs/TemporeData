@@ -5,11 +5,15 @@ import org.temporedata.api.base.exceptions.ZyException;
 import org.temporedata.api.base.pojos.BaseResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
@@ -67,10 +71,31 @@ public class GlobalExceptionHandler {
         return BaseResponse.error(400, msg);
     }
 
+    /** Missing required query/path parameter (e.g. GET /xxx?param required but absent). */
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public BaseResponse<Void> handleMissingParam(MissingServletRequestParameterException e) {
+        return BaseResponse.error(400, "缺少必要参数: " + e.getParameterName());
+    }
+
+    /** Type mismatch / date-format parse error on a bound parameter. */
+    @ExceptionHandler({MethodArgumentTypeMismatchException.class, HttpMessageNotReadableException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public BaseResponse<Void> handleTypeMismatch(Exception e) {
+        return BaseResponse.error(400, "参数格式错误");
+    }
+
     @ExceptionHandler({EntityNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public BaseResponse<Void> handleNotFound(EntityNotFoundException e) {
         return BaseResponse.error(404, "资源不存在");
+    }
+
+    /** Wrong HTTP method on a known path: map to 405 instead of a generic 500. */
+    @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
+    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+    public BaseResponse<Void> handleMethodNotSupported(HttpRequestMethodNotSupportedException e) {
+        return BaseResponse.error(405, "请求方法不支持: " + e.getMethod());
     }
 
     @ExceptionHandler(Exception.class)

@@ -6,17 +6,24 @@ import org.temporedata.api.base.exceptions.BusinessException;
 import org.temporedata.api.dev.workflow.RuntimeCommandRes;
 import org.temporedata.api.dev.workflow.WorkflowRunRes;
 import org.temporedata.modules.dev.workflow.entity.WorkflowInstanceEntity;
+import org.temporedata.modules.dev.workflow.entity.WorkflowNodeInstanceEntity;
 import org.temporedata.modules.dev.workflow.entity.WorkflowRunCommandEntity;
 import org.temporedata.modules.dev.workflow.repository.WorkflowInstanceRepository;
+import org.temporedata.modules.dev.workflow.repository.WorkflowNodeInstanceRepository;
 import org.temporedata.modules.dev.workflow.repository.WorkflowRunCommandRepository;
 import org.temporedata.modules.dev.workflow.runner.RuntimeControlRegistry;
 import org.temporedata.modules.dev.workflow.runner.WorkflowRunner;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
@@ -34,6 +41,7 @@ public class WorkflowRuntimeService {
     private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     private final WorkflowInstanceRepository instanceRepository;
+    private final WorkflowNodeInstanceRepository nodeInstanceRepository;
     private final WorkflowRunCommandRepository commandRepository;
     private final RuntimeControlRegistry controlRegistry;
     private final WorkflowRunner workflowRunner;
@@ -83,6 +91,76 @@ public class WorkflowRuntimeService {
         String pool = inst.getPool() == null ? "default" : inst.getPool();
         log.info("Rerun instance {} (scope {})", instanceId, s);
         return workflowRunner.run(inst.getWorkflowId(), "RERUN", null, priority, pool);
+    }
+
+    /**
+     * Force-mark a failed node instance as SUCCESS so the rest of the DAG can
+     * proceed. Records an audit command; only applies to non-active instances.
+     */
+    @Transactional
+    public void forceSuccess(String instanceId, String nodeInstanceId, String operator) {
+        WorkflowInstanceEntity inst = findInstance(instanceId);
+        if ("RUNNING".equals(inst.getStatus()) || "PAUSED".equals(inst.getStatus())) {
+            throw new BusinessException("Instance is active, cannot force success while running: " + instanceId);
+        }
+        WorkflowNodeInstanceEntity ni = nodeInstanceRepository.findById(nodeInstanceId)
+                .orElseThrow(() -> new BusinessException("Node instance not found: " + nodeInstanceId));
+        ni.setStatus("SUCCESS");
+        ni.setErrorMsg(null);
+        ni.setResult("[force success] by " + operator);
+        ni.setFinishTime(LocalDateTime.now());
+        nodeInstanceRepository.save(ni);
+        recordCommand(instanceId, "ForceSuccess", "NODE", ni.getNodeId(), operator,
+                "force success " + ni.getNodeName() + " by " + operator);
+        log.info("Forced node instance {} to success", nodeInstanceId);
+    }
+
+    /** Re-run failed nodes (and their downstream) from the last run. */
+    @Transactional
+    public WorkflowRunRes recoverFailed(String instanceId, String operator) {
+        WorkflowInstanceEntity inst = findInstance(instanceId);
+        recordCommand(instanceId, "RecoverFailed", "FAILED", null, operator, "recover failed by " + operator);
+        int priority = inst.getPriority() == null ? 5 : inst.getPriority();
+        String pool = inst.getPool() == null ? "default" : inst.getPool();
+        return workflowRunner.run(inst.getWorkflowId(), "RECOVER", null, priority, pool);
+    }
+
+    /**
+     * Backfill: generate one run per historical date between start and end.
+     * DAG node dependencies are preserved per-run by the runner; instances are
+     * either serialised (default) or issued concurrently.
+     */
+    @Transactional
+    public Map<String, Object> backfill(String workflowId, String start, String end,
+                                        String interval, String concurrency) {
+        LocalDate s = LocalDate.parse(start);
+        LocalDate e = LocalDate.parse(end);
+        if (s.isAfter(e)) {
+            throw new BusinessException("backfill start must be <= end");
+        }
+        List<String> dates = new ArrayList<>();
+        for (LocalDate d = s; !d.isAfter(e); d = d.plusDays(1)) {
+            dates.add(d.toString());
+        }
+        boolean serialize = !"PARALLEL".equalsIgnoreCase(concurrency);
+        if (serialize) {
+            for (String date : dates) {
+                workflowRunner.run(workflowId, "BACKFILL", null, 5, "default", date);
+            }
+        } else {
+            CompletableFuture<?>[] futures = dates.stream()
+                    .map(date -> CompletableFuture.runAsync(
+                            () -> workflowRunner.run(workflowId, "BACKFILL", null, 5, "default", date)))
+                    .toArray(CompletableFuture[]::new);
+            CompletableFuture.allOf(futures).join();
+        }
+        Map<String, Object> out = new HashMap<>();
+        out.put("workflowId", workflowId);
+        out.put("generated", dates.size());
+        out.put("interval", interval == null ? "DAILY" : interval);
+        out.put("concurrency", serialize ? "SERIAL" : "PARALLEL");
+        out.put("dates", dates);
+        return out;
     }
 
     // ---- Priority / pool ----

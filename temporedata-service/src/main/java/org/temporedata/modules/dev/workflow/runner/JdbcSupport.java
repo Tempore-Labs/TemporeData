@@ -1,7 +1,7 @@
 package org.temporedata.modules.dev.workflow.runner;
 
 import org.temporedata.common.util.Crypto;
-import org.temporedata.modules.integration.datasource.entity.DatasourceEntity;
+import org.temporedata.integration.core.datasource.entity.DatasourceEntity;
 import org.springframework.stereotype.Component;
 
 import java.sql.Connection;

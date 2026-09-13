@@ -1,6 +1,7 @@
 package org.temporedata.modules.dev.workflow.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.temporedata.api.base.exceptions.BusinessException;
 import org.temporedata.api.base.pojos.BaseResponse;
 import org.temporedata.api.dev.workflow.*;
 import org.temporedata.modules.dev.workflow.runner.WorkflowRunner;
@@ -51,11 +52,33 @@ public class WorkflowController {
         return BaseResponse.success(workflowService.execute(id));
     }
 
+    @GetMapping("/{id}/versions")
+    public BaseResponse<List<org.temporedata.modules.dev.workflow.entity.WorkflowVersionEntity>> versions(@PathVariable String id) {
+        return BaseResponse.success(workflowService.versions(id));
+    }
+
+    @PostMapping("/{id}/versions/{versionId}/rollback")
+    public BaseResponse<WorkflowRes> rollback(@PathVariable String id, @PathVariable String versionId) {
+        return BaseResponse.success(workflowService.rollback(id, versionId));
+    }
+
+    @PostMapping("/{id}/online")
+    public BaseResponse<WorkflowRes> online(@PathVariable String id) {
+        return BaseResponse.success(workflowService.online(id));
+    }
+
+    @PostMapping("/{id}/offline")
+    public BaseResponse<WorkflowRes> offline(@PathVariable String id) {
+        return BaseResponse.success(workflowService.offline(id));
+    }
+
     @PutMapping("/{id}/schedule")
     public BaseResponse<WorkflowRes> schedule(@PathVariable String id, @RequestBody Map<String, Object> body) {
         String cronExpression = (String) body.get("cronExpression");
         Boolean enabled = body.containsKey("enabled") ? Boolean.valueOf(String.valueOf(body.get("enabled"))) : null;
-        return BaseResponse.success(workflowService.schedule(id, cronExpression, enabled));
+        String policy = body.get("schedulePolicy") == null ? null : String.valueOf(body.get("schedulePolicy"));
+        String missfire = body.get("scheduleMissfire") == null ? null : String.valueOf(body.get("scheduleMissfire"));
+        return BaseResponse.success(workflowService.schedule(id, cronExpression, enabled, policy, missfire));
     }
 
     @GetMapping("/{id}/executions")
@@ -68,6 +91,19 @@ public class WorkflowController {
     @PostMapping("/{id}/run")
     public BaseResponse<WorkflowRunRes> run(@PathVariable String id) {
         return BaseResponse.success(workflowRunner.run(id, "MANUAL", null));
+    }
+
+    @PostMapping("/{id}/backfill")
+    public BaseResponse<Map<String, Object>> backfill(@PathVariable String id,
+                                                      @RequestBody Map<String, Object> body) {
+        String start = body.get("start") == null ? null : String.valueOf(body.get("start"));
+        String end = body.get("end") == null ? null : String.valueOf(body.get("end"));
+        String interval = body.get("interval") == null ? "DAILY" : String.valueOf(body.get("interval"));
+        String concurrency = body.get("concurrency") == null ? "SERIAL" : String.valueOf(body.get("concurrency"));
+        if (start == null || end == null) {
+            throw new BusinessException("start and end are required");
+        }
+        return BaseResponse.success(runtimeService.backfill(id, start, end, interval, concurrency));
     }
 
     @GetMapping("/{id}/instances")
@@ -103,6 +139,22 @@ public class WorkflowController {
     public BaseResponse<Void> stop(@PathVariable String instanceId) {
         runtimeService.stop(instanceId, "admin");
         return BaseResponse.success();
+    }
+
+    @PostMapping("/instances/{instanceId}/force-success")
+    public BaseResponse<Void> forceSuccess(@PathVariable String instanceId,
+                                           @RequestBody(required = false) Map<String, String> body) {
+        String nodeInstanceId = body == null ? null : body.get("nodeInstanceId");
+        if (nodeInstanceId == null || nodeInstanceId.isBlank()) {
+            throw new org.temporedata.api.base.exceptions.BusinessException("nodeInstanceId is required");
+        }
+        runtimeService.forceSuccess(instanceId, nodeInstanceId, "admin");
+        return BaseResponse.success();
+    }
+
+    @PostMapping("/instances/{instanceId}/recover-failed")
+    public BaseResponse<WorkflowRunRes> recoverFailed(@PathVariable String instanceId) {
+        return BaseResponse.success(runtimeService.recoverFailed(instanceId, "admin"));
     }
 
     @PostMapping("/instances/{instanceId}/rerun")

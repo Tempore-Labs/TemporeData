@@ -16,8 +16,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @EnableAsync
 @ComponentScan(basePackages = "org.temporedata")
-@EnableJpaRepositories(basePackages = "org.temporedata.modules")
-@EntityScan(basePackages = "org.temporedata.modules")
+@EnableJpaRepositories(basePackages = "org.temporedata")
+@EntityScan(basePackages = "org.temporedata")
 public class TemporeDataApplication {
 
     public static void main(String[] args) {

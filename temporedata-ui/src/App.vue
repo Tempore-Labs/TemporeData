@@ -1,10 +1,7 @@
 <template>
-  <el-config-provider :locale="zhCn">
-    <router-view />
-  </el-config-provider>
+  <router-view />
 </template>
 
-<script setup>
-import { ElConfigProvider } from 'element-plus'
-import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
+<script setup lang="ts">
+// Root component: router decides between /login (no shell) and AppShell.
 </script>
